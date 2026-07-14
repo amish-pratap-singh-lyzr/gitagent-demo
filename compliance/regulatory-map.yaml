@@ -1,0 +1,10 @@
+frameworks:
+  soc2:
+    applies_to: [recordkeeping, data_governance]
+    notes: Audit logging and access control evidence for SOC 2 Type II
+  iso_27001:
+    applies_to: [data_governance, segregation_of_duties]
+    notes: Information security management — SoD and data classification controls
+  gdpr:
+    applies_to: [data_governance]
+    notes: PII redaction on any diff content that might contain personal data

@@ -1,0 +1,14 @@
+spec_version: "0.1.0"
+name: security-scanner
+version: 1.0.0
+description: Scans PR diffs for security-sensitive changes and flags them for human review
+author: Amish Pratap Singh (Lyzr)
+license: MIT
+model:
+  preferred: claude-sonnet-5
+  constraints:
+    temperature: 0.0
+    max_tokens: 2048
+tags:
+  - security
+  - sub-agent

@@ -1,0 +1,28 @@
+hooks:
+  on_session_start:
+    - script: scripts/on-start.sh
+      description: Load review context and confirm audit logging is active
+      timeout: 10
+      compliance: true
+      fail_open: false
+
+  pre_tool_use:
+    - script: scripts/audit-tool-call.sh
+      description: Record every tool invocation for the compliance audit trail
+      timeout: 5
+      compliance: true
+      fail_open: false
+
+  on_error:
+    - script: scripts/on-error.sh
+      description: Escalate to a human reviewer on unrecoverable error
+      timeout: 10
+      compliance: true
+      fail_open: true
+
+  on_session_end:
+    - script: scripts/finalize-audit-log.sh
+      description: Close out the structured audit log entry for this review
+      timeout: 10
+      compliance: true
+      fail_open: false

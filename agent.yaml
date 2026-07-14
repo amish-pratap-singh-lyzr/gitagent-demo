@@ -1,0 +1,208 @@
+# ── Required ────────────────────────────────────────────────────────────
+spec_version: "0.1.0"
+name: gap-pr-reviewer
+version: 1.0.0
+description: >
+  Full-capability GAP demo agent — an automated pull-request reviewer that
+  exercises every field in the GitAgentProtocol spec (identity, memory,
+  skills, tools, sub-agent delegation, hooks, workflows, MCP servers, A2A,
+  and the full compliance/financial-governance block).
+
+# ── Recommended ─────────────────────────────────────────────────────────
+author: Amish Pratap Singh (Lyzr)
+license: MIT
+tags:
+  - demo
+  - code-review
+  - gap-capability-showcase
+metadata:
+  internal_id: "gitagent-demo-001"
+  cost_center: 0
+
+# ── Composition — reuse other agents/skills/tools ──────────────────────
+extends: https://github.com/open-gitagent/pr-review-agent
+dependencies:
+  - name: security-scanner
+    source: ./agents/security-scanner
+    version: "1.0.0"
+    mount: agents/security-scanner
+    vendor_management:
+      due_diligence_date: "2026-01-15"
+      soc_report: false
+      risk_assessment: low
+
+# ── Model selection ─────────────────────────────────────────────────────
+model:
+  preferred: claude-sonnet-5
+  fallback:
+    - claude-opus-4-8
+    - gpt-4o
+  constraints:
+    temperature: 0.2
+    max_tokens: 4096
+    top_p: 0.9
+    top_k: 40
+    stop_sequences: ["</review>"]
+    presence_penalty: 0
+    frequency_penalty: 0
+
+skills:
+  - code-review
+  - pr-summarization
+tools:
+  - github-api
+  - run-linter
+
+# ── Multi-agent / delegation ────────────────────────────────────────────
+agents:
+  security-scanner:
+    description: Scans diffs for security-sensitive changes (auth, secrets, injection surfaces)
+    delegation:
+      mode: auto
+      triggers:
+        - security_sensitive_diff_detected
+delegation:
+  mode: auto
+
+# ── Runtime execution parameters ────────────────────────────────────────
+runtime:
+  max_turns: 30
+  temperature: 0.2
+  timeout: 120
+
+# ── Agent-to-Agent (A2A) protocol metadata ──────────────────────────────
+a2a:
+  url: https://gap-pr-reviewer.example.com/a2a
+  capabilities: [text, tool_use]
+  authentication:
+    type: api_key
+    credentials_ref: A2A_API_KEY
+  protocols: [a2a, mcp]
+
+# ── MCP servers (GAP treats MCP as the lower "how a tool is called" layer) ─
+mcp_servers:
+  github:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-github"
+    env:
+      GITHUB_PERSONAL_ACCESS_TOKEN: "${GITHUB_TOKEN}"
+  compliance-api:
+    url: "https://compliance-api.internal/mcp"
+    headers:
+      Authorization: "Bearer ${COMPLIANCE_API_TOKEN}"
+
+# ── Registries — where this agent's skills can be discovered/published ──
+registries:
+  - name: gitagent-registry
+    url: https://registry.gitagent.sh
+
+# ── Compliance (shown here for demo purposes — a SaaS SDLC framing) ─────
+compliance:
+  risk_tier: standard
+  frameworks:
+    - soc2
+    - iso_27001
+    - gdpr
+
+  supervision:
+    designated_supervisor: eng-lead
+    review_cadence: quarterly
+    human_in_the_loop: conditional
+    escalation_triggers:
+      - confidence_below: 0.7
+      - action_type: merge_to_main
+      - error_detected: true
+    override_capability: true
+    kill_switch: true
+
+  recordkeeping:
+    audit_logging: true
+    log_format: structured_json
+    retention_period: 1y
+    log_contents:
+      - prompts_and_responses
+      - tool_calls
+      - decision_pathways
+      - model_version
+      - timestamps
+    immutable: true
+
+  model_risk:
+    inventory_id: MRM-GAP-DEMO-0001
+    validation_cadence: annual
+    validation_type: targeted
+    conceptual_soundness: compliance/risk-assessment.md
+    ongoing_monitoring: true
+    outcomes_analysis: true
+    drift_detection: true
+    parallel_testing: false
+
+  data_governance:
+    pii_handling: redact
+    data_classification: internal
+    consent_required: false
+    cross_border: false
+    bias_testing: false
+    lda_search: false
+
+  communications:
+    type: correspondence
+    pre_review_required: false
+    fair_balanced: true
+    no_misleading: true
+    disclosures_required: false
+
+  vendor_management:
+    due_diligence_complete: true
+    soc_report_required: false
+    vendor_ai_notification: true
+    subcontractor_assessment: false
+
+  segregation_of_duties:
+    roles:
+      - id: developer
+        description: Opens the pull request and pushes changes
+        permissions: [create, submit]
+      - id: reviewer
+        description: Reviews the diff and approves or requests changes
+        permissions: [review, approve, reject]
+      - id: merger
+        description: Merges an approved pull request into the target branch
+        permissions: [execute]
+      - id: auditor
+        description: Audits merged PRs for policy and compliance adherence
+        permissions: [audit, report]
+    conflicts:
+      - [developer, reviewer]
+      - [developer, auditor]
+      - [merger, reviewer]
+      - [merger, auditor]
+    assignments:
+      gap-pr-reviewer: [reviewer]
+      security-scanner: [reviewer]
+    isolation:
+      state: full
+      credentials: separate
+    handoffs:
+      - action: merge_to_main
+        required_roles: [reviewer, merger]
+        approval_required: true
+    enforcement: advisory
+
+  # financial_governance is declared but not enforced here — a PR reviewer
+  # has no purchasing capability, this only demonstrates the field's shape.
+  financial_governance:
+    enabled: false
+    firewall: local-script
+    spending:
+      max_per_transaction_cents: 1
+      max_monthly_cents: 1
+      currency: USD
+      allowed_categories: []
+      blocked_categories: [gambling, crypto, unknown]
+    approval:
+      require_above_cents: 0
+      timeout_minutes: 60
+      auto_deny_on_timeout: true

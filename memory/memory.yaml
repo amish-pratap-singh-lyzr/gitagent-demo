@@ -1,0 +1,9 @@
+version: 1
+entries: []
+# Example entry shape once reviews start accumulating:
+# entries:
+#   - type: accepted_exception
+#     file: src/legacy/parser.js
+#     reason: "Pre-existing eslint-disable, tracked in TICKET-123"
+#     accepted_by: eng-lead
+#     date: "2026-07-14"

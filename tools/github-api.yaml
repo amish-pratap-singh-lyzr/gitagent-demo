@@ -1,0 +1,38 @@
+name: github-api
+description: Read pull request diffs, files, and comments, and post review comments via the GitHub REST API (routed through the github MCP server)
+version: 1.0.0
+input_schema:
+  type: object
+  properties:
+    operation:
+      type: string
+      enum:
+        - get_pull_request
+        - get_pull_request_diff
+        - list_pull_request_files
+        - create_review_comment
+        - create_pull_request_review
+      description: Which GitHub API operation to perform
+    repo:
+      type: string
+      description: "owner/repo"
+    pull_number:
+      type: integer
+    body:
+      type: string
+      description: Comment or review body (for create_* operations)
+  required: [operation, repo, pull_number]
+output_schema:
+  type: object
+  properties:
+    result:
+      type: object
+implementation:
+  type: mcp_server
+  url: "mcp://github"
+  timeout: 30
+annotations:
+  requires_confirmation: false
+  read_only: false
+  cost: low
+  compliance_sensitive: false

@@ -1,0 +1,3 @@
+documents:
+  - path: knowledge/security-review-checklist.md
+    description: Checklist the security-scanner sub-agent applies to sensitive diffs

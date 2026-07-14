@@ -1,0 +1,38 @@
+name: run-linter
+description: Run the repo's configured ESLint config against changed files and return findings as JSON
+version: 1.0.0
+input_schema:
+  type: object
+  properties:
+    files:
+      type: array
+      items:
+        type: string
+      description: Changed file paths to lint
+  required: [files]
+output_schema:
+  type: object
+  properties:
+    findings:
+      type: array
+      items:
+        type: object
+        properties:
+          file:
+            type: string
+          line:
+            type: integer
+          rule:
+            type: string
+          message:
+            type: string
+implementation:
+  type: script
+  path: run-linter.sh
+  runtime: bash
+  timeout: 60
+annotations:
+  requires_confirmation: false
+  read_only: true
+  cost: low
+  compliance_sensitive: false
