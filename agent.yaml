@@ -80,14 +80,18 @@ a2a:
   protocols: [a2a, mcp]
 
 # ── MCP servers (GAP treats MCP as the lower "how a tool is called" layer) ─
+# `github` is our own read-only server (mcp-servers/github-readonly) — it
+# exposes get_pull_request/get_pull_request_diff/list_pull_request_files
+# only. There is no write tool here on purpose: posting a review is a
+# separate, human-confirmed action, not something this agent does directly.
+# See DUTIES.md.
 mcp_servers:
   github:
-    command: npx
+    command: node
     args:
-      - "-y"
-      - "@modelcontextprotocol/server-github"
+      - "mcp-servers/github-readonly/index.js"
     env:
-      GITHUB_PERSONAL_ACCESS_TOKEN: "${GITHUB_TOKEN}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
   compliance-api:
     url: "https://compliance-api.internal/mcp"
     headers:
