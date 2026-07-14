@@ -26,3 +26,10 @@ hooks:
       timeout: 10
       compliance: true
       fail_open: false
+    - script: scripts/learn-and-commit.sh
+      description: >-
+        Fold memory/.pending-learning.json (if the session wrote one) into
+        memory/learnings.jsonl and commit locally — never pushes
+      timeout: 10
+      compliance: false
+      fail_open: true

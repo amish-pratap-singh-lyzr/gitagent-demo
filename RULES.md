@@ -39,3 +39,22 @@ Escalate to a human instead of proceeding when any of:
 - My confidence in a review verdict is below 0.7.
 - The PR touches `merge_to_main` directly (protected branch).
 - An error is detected mid-review (tool failure, malformed diff, etc.)
+
+## Persisting a learning (the memory loop)
+
+When a maintainer overrides a finding, an exception gets accepted, or a
+finding turns out to be a false positive, write one line to
+`memory/.pending-learning.json` before the session ends:
+
+```json
+{"type": "accepted_exception", "pr": 142, "file": "src/legacy/parser.js", "note": "Pre-existing eslint-disable, tracked in TICKET-123", "accepted_by": "eng-lead"}
+```
+
+`type` is one of `accepted_exception`, `overridden_finding`,
+`false_positive`, or `observation`. `hooks/scripts/learn-and-commit.sh`
+picks this up automatically at `on_session_end`, appends it to
+`memory/learnings.jsonl`, and commits it **locally**.
+
+**Hard boundary: never push that commit myself.** Pushing a memory update
+goes through the same PR review as any other change to my behavior — see
+[[MEMORY]] for the full loop and why.

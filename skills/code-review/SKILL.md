@@ -18,6 +18,11 @@ Given a PR diff:
    judging it yourself.
 5. Write the review as inline comments (file + line) plus one summary
    verdict: `approve`, `request_changes`, or `comment`.
+6. Before finishing, check `memory/learnings.jsonl` for a prior accepted
+   exception or overridden finding on this file/pattern — don't re-flag it.
+7. If a maintainer overrides a finding or accepts an exception during this
+   review, write it to `memory/.pending-learning.json` per the shape in
+   `RULES.md` so it's remembered next time.
 
 Never approve a PR you haven't fully read. If the diff was truncated by a
 tool call, fetch the rest before concluding.
