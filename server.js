@@ -207,8 +207,24 @@ async function postComment(repo, pullNumber, body) {
 
 // ---- HTTP server -------------------------------------------------------
 
+// Only reflect localhost/127.0.0.1 origins (e.g. Live Server on :5500 while
+// editing the UI) — this server can post real GitHub comments, so it
+// shouldn't accept cross-origin calls from arbitrary sites.
+const LOCAL_ORIGIN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
+  const origin = req.headers.origin;
+
+  if (origin && LOCAL_ORIGIN.test(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  }
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    return res.end();
+  }
 
   if (req.method === "GET" && url.pathname === "/") {
     const html = fs.readFileSync(path.join(REPO_ROOT, "public/index.html"));

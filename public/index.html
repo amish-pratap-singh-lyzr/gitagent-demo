@@ -91,6 +91,12 @@ const postresult = document.getElementById('postresult');
 
 let currentRepo = null, currentPR = null;
 
+// server.js always listens on 4173. If this page is opened through anything
+// else (e.g. VSCode Live Server on 5500 for live-reload while editing), fall
+// back to that origin explicitly instead of resolving /api/* against the
+// wrong server — see the 405 this caused when they diverged.
+const API_BASE = location.port === '4173' ? '' : 'http://localhost:4173';
+
 function addEvent(cls, html) {
   const div = document.createElement('div');
   div.className = 'event ' + cls;
@@ -121,7 +127,7 @@ form.addEventListener('submit', async (e) => {
   reviewEl.innerHTML = ''; activityEl.innerHTML = ''; postbox.style.display = 'none';
   goBtn.disabled = true; goBtn.textContent = 'Reviewing...';
 
-  const res = await fetch('/api/review', {
+  const res = await fetch(API_BASE + '/api/review', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ repo, pullNumber, message }),
@@ -172,7 +178,7 @@ postBtn.addEventListener('click', async () => {
   postBtn.disabled = true; postBtn.textContent = 'Posting...';
   postresult.textContent = '';
   try {
-    const res = await fetch('/api/post-comment', {
+    const res = await fetch(API_BASE + '/api/post-comment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ repo: currentRepo, pullNumber: currentPR, text: commentText.value }),
