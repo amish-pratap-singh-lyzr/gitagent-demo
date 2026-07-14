@@ -1,0 +1,12 @@
+# Transient — folded into memory/learnings.jsonl and deleted by
+# hooks/scripts/learn-and-commit.sh at on_session_end
+memory/.pending-learning.json
+
+# Secrets — never commit
+.env
+
+# Installed deps for the local test UI's MCP server
+mcp-servers/github-readonly/node_modules/
+
+# Transient — written and deleted by server.js at startup
+.compiled-persona.tmp

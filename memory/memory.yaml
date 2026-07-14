@@ -1,0 +1,11 @@
+version: 1
+# Structural config for this agent's memory sources — not the learnings
+# themselves. The append-only learning log lives in memory/learnings.jsonl
+# (one JSON object per line, git-committed by hooks/scripts/learn-and-commit.sh
+# on on_session_end). See MEMORY.md for the loop this feeds.
+sources:
+  - path: memory/learnings.jsonl
+    format: jsonl
+    description: Accepted exceptions, overridden findings, and other durable review learnings
+# Example line appended to memory/learnings.jsonl by the hook:
+# {"type":"accepted_exception","pr":142,"file":"src/legacy/parser.js","note":"Pre-existing eslint-disable, tracked in TICKET-123","accepted_by":"eng-lead"}

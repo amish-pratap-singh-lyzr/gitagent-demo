@@ -1,0 +1,38 @@
+name: github-api
+description: >-
+  Read-only access to pull request metadata, diffs, and files via the local
+  read-only github MCP server (mcp-servers/github-readonly). Posting a
+  review is NOT exposed here — the agent proposes a review, and a human
+  confirms and posts it through the UI's own direct GitHub call. See
+  DUTIES.md for why (this agent holds `reviewer`, never `merger`).
+version: 1.0.0
+input_schema:
+  type: object
+  properties:
+    operation:
+      type: string
+      enum:
+        - get_pull_request
+        - get_pull_request_diff
+        - list_pull_request_files
+      description: Which read-only GitHub operation to perform
+    repo:
+      type: string
+      description: "owner/repo"
+    pull_number:
+      type: integer
+  required: [operation, repo, pull_number]
+output_schema:
+  type: object
+  properties:
+    result:
+      type: object
+implementation:
+  type: mcp_server
+  url: "mcp://github"
+  timeout: 30
+annotations:
+  requires_confirmation: false
+  read_only: true
+  cost: low
+  compliance_sensitive: false

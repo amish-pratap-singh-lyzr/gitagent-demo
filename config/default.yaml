@@ -1,0 +1,6 @@
+env: default
+review:
+  auto_post_comments: false
+  max_files_per_review: 50
+logging:
+  level: info

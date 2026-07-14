@@ -1,0 +1,8 @@
+env: production
+review:
+  auto_post_comments: true
+  max_files_per_review: 50
+logging:
+  level: warn
+compliance:
+  audit_logging: true

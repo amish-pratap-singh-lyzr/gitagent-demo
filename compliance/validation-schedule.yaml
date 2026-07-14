@@ -1,0 +1,9 @@
+validation_cadence: annual
+validation_type: targeted
+last_validated: null
+next_validation_due: null
+owner: eng-lead
+scope:
+  - review accuracy vs. human reviewer sample
+  - escalation trigger effectiveness
+  - segregation-of-duties conflict matrix still matches team roles

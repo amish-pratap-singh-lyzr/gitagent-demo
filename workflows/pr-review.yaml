@@ -1,0 +1,18 @@
+name: pr-review
+description: End-to-end pull request review workflow
+trigger: pull_request.opened
+steps:
+  - id: summarize
+    skill: pr-summarization
+  - id: lint
+    tool: run-linter
+  - id: review
+    skill: code-review
+    depends_on: [summarize, lint]
+  - id: security_scan
+    agent: security-scanner
+    condition: security_sensitive_diff_detected
+    depends_on: [review]
+  - id: post_review
+    tool: github-api
+    depends_on: [review, security_scan]
